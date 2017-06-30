@@ -64,11 +64,12 @@ Object.keys(proxyTable).forEach(function (context) {
 });
 
 // handle fallback for HTML5 history API
-var rewrites = Object.keys(utils.getEntries('./src/pages', 'entry.js')).map(function (entry) {
-    return {
-        from: new RegExp(`/${entry}`),
-        to: `/${entry}/index.html`
-    };
+var rewrites = Object.keys(utils.getEntries('./src/pages', 'entry.js'))
+    .map(function (entry) {
+        return {
+            from: new RegExp('/' + entry),
+            to: '/' + entry + '/index.html'
+        };
 });
 app.use(require('connect-history-api-fallback')({
     htmlAcceptHeaders: ['text/html'],
