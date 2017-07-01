@@ -9,11 +9,11 @@ import * as types from './store/mutation-types';
 
 Vue.use(Router);
 
-export function createRouter({base = '/', routes = []}) {
+export function createRouter({routes = []}) {
 
     const router = new Router({
         mode: 'history',
-        base,
+        base: '/',
         routes: [
             ...routes,
             {

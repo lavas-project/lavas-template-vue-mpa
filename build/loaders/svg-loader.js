@@ -1,45 +1,47 @@
 /**
- * @file svg-loader
+ * @file svg loader
+ *
+ * @desc 向app.js中注入通过vue-awesome注册自定义svg的代码
  * @author *__ author __*{% if: *__ email __* %}(*__ email __*){% /if %}
  */
 
-var fs = require('fs');
-var path = require('path');
-var config = require('../../config');
-// svg存放的文件夹
-var svgDir = config.icon.svgDir;
-// vue-awesome中使用的图标列表
-var icons = config.icon.icons;
-// 自定义svg前缀
-var prefix = config.icon.prefix;
+/* eslint-disable fecs-no-require, fecs-prefer-destructure */
+
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const iconConfig = require('../../config/icon');
+const svgDir = iconConfig.svgDir;
+const icons = iconConfig.icons;
+const prefix = iconConfig.prefix;
 
 module.exports = function (source) {
+    // 从vue-awesome中导入
     if (icons) {
-        // 从vue-awesome中导入
-        icons.forEach(function (iconName) {
-            source += 'import "vue-awesome/icons/' + iconName + '";';
-        });
+        source += icons.map(name => `import 'vue-awesome/icons/${name}';`).join('');
     }
+
     // 从svg文件夹中取
-    fs.readdirSync(svgDir).forEach(function (file) {
-        var svg = fs.readFileSync(path.resolve(svgDir, file), 'utf8');
-        var sizeMatch = svg.match(/ viewBox="0 0 (\d+) (\d+)"/);
-        var dMatch = svg.match(/ d="([^"]+)"/);
+    fs.readdirSync(svgDir).forEach(file => {
+        let svg = fs.readFileSync(path.resolve(svgDir, file), 'utf8');
+        let sizeMatch = svg.match(/ viewBox="0 0 (\d+) (\d+)"/);
+        let dMatch = svg.match(/ d="([^"]+)"/);
+        let svgName = prefix + path.basename(file, path.extname(file));
+
         if (!sizeMatch || !dMatch) {
             return;
         }
-        var svgName = prefix + file.replace(/\.svg$/, '');
-        // 注册svg
-        source += [
-            'Icon.register(',
-                '{',
-                '"' + svgName + '": {',
-                    'width: ' + parseInt(sizeMatch[1], 10)  + ',',
-                    'height: ' + parseInt(sizeMatch[2], 10) + ',',
-                    'd: "' + dMatch[1] + '"',
-                '}',
-            '});'
-        ].join('');
+
+        // 注册使用到的svg
+        source += `Icon.register(
+            {
+                '${svgName}': {
+                    width: ${parseInt(sizeMatch[1], 10)},
+                    height: ${parseInt(sizeMatch[2], 10)},
+                    d: '${dMatch[1]}'
+                }
+            });`;
     });
 
     return source;

@@ -14,7 +14,7 @@ export default {
             component: Home
         },
         {
-            path: '/user',
+            path: '/home/user',
             name: 'user',
             component: User
         }

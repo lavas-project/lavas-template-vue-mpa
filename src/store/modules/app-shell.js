@@ -267,10 +267,7 @@ export default {
                         // 是否是当前激活的
                         active: true,
                         // 路由
-                        route: {
-                            name: 'home',
-                            path: '/'
-                        }
+                        route: '/home'
                     },
                     {
                         // 按钮的名字
@@ -280,7 +277,7 @@ export default {
                         // 显示的文字
                         text: '个人中心',
                         // 路由信息
-                        route: '/user'
+                        route: '/home/user'
                     }
                 ]
             },

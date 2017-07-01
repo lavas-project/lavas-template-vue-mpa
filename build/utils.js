@@ -4,14 +4,15 @@
  */
 
 /* eslint-disable no-console */
+'use strict';
 
-var path = require('path');
-var fs = require('fs');
-var config = require('../config');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const fs = require('fs');
+const path = require('path');
+const config = require('../config');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 exports.assetsPath = function (newPath) {
-    var assetsSubDirectory = process.env.NODE_ENV === 'production'
+    let assetsSubDirectory = process.env.NODE_ENV === 'production'
         ? config.build.assetsSubDirectory
         : config.dev.assetsSubDirectory
     ;
@@ -21,7 +22,7 @@ exports.assetsPath = function (newPath) {
 exports.cssLoaders = function (options) {
     options = options || {};
 
-    var cssLoader = {
+    let cssLoader = {
         loader: 'css-loader',
         options: {
             minimize: process.env.NODE_ENV === 'production',
@@ -31,7 +32,7 @@ exports.cssLoaders = function (options) {
 
     // generate loader string to be used with extract text plugin
     function generateLoaders(loader, loaderOptions) {
-        var loaders = [cssLoader];
+        let loaders = [cssLoader];
         if (loader) {
             loaders.push({
                 loader: loader + '-loader',
@@ -67,11 +68,11 @@ exports.cssLoaders = function (options) {
 
 // Generate loaders for standalone style files (outside of .vue)
 exports.styleLoaders = function (options) {
-    var output = [];
-    var loaders = exports.cssLoaders(options);
+    let output = [];
+    let loaders = exports.cssLoaders(options);
 
     Object.keys(loaders).forEach(function (extension) {
-        var loader = loaders[extension];
+        let loader = loaders[extension];
         output.push({
             test: new RegExp('\\.' + extension + '$'),
             use: loader
@@ -80,13 +81,17 @@ exports.styleLoaders = function (options) {
     return output;
 };
 
+// 在pageDir中寻找各个页面入口
 exports.getEntries = function (pageDir, entryPath) {
     var entry = {};
     var pageDirPath = path.join(__dirname, '..', pageDir);
     fs.readdirSync(pageDirPath)
-        .filter(f => fs.statSync(path.join(pageDirPath, f)).isDirectory())
-        .forEach(f => {
-            entry[path.basename(f)] = pageDir + '/' + f + '/' + entryPath;
+        // 发现文件夹，就认为是页面模块
+        .filter(function (f) {
+            return fs.statSync(path.join(pageDirPath, f)).isDirectory();
+        })
+        .forEach(function (f) {
+            entry[path.basename(f)] = [pageDir, f, entryPath].join('/');
         });
     return entry;
 };

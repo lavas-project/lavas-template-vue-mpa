@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // TODO: 在pr通过之前，先使用
 
 var webpack = require("webpack");
