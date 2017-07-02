@@ -121,7 +121,7 @@ app.use(require('connect-history-api-fallback')({
 
 在生产环境构建时，使用了[webpack-cdn插件](https://github.com/van-nguyen/webpack-cdn-plugin)，由于发布时代码没有编译到ES2015，里面又使用了例如解构的ES6语法，在 node < 6 时运行`npm run build`会出错。
 
-[对应PR](https://github.com/van-nguyen/webpack-cdn-plugin/pull/5)
+[对应PR](https://github.com/van-nguyen/webpack-cdn-plugin/pull/5)已通过，问题解决。
 
 ### vue-skeleton插件
 

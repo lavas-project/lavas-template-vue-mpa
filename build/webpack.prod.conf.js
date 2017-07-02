@@ -36,7 +36,8 @@ var webpackConfig = merge(baseWebpackConfig, {
         })
     },
     externals: {
-        vue: 'Vue'
+        vue: 'Vue',
+        vuetify: 'Vuetify'
     },
     devtool: config.build.productionSourceMap ? '#source-map' : false,
     output: {
@@ -75,7 +76,7 @@ var webpackConfig = merge(baseWebpackConfig, {
         }),
 
         new MultipageWebpackPlugin({
-            bootstrapFilename: 'manifest',
+            bootstrapFilename: utils.assetsPath('js/manifest.[chunkhash].js'),
             templateFilename: '[name].html',
             templatePath: config.build.assetsRoot,
             htmlTemplatePath: resolve('src/pages/[name]/index.html'),
@@ -94,9 +95,13 @@ var webpackConfig = merge(baseWebpackConfig, {
         new WebpackCdnPlugin({
             modules: [
                 {
-                    'name': 'vue',
-                    'var': 'Vue',
-                    'path': 'dist/vue.runtime.min.js'
+                    name: 'vue',
+                    var: 'Vue',
+                    path: 'dist/vue.runtime.min.js'
+                },
+                {
+                    name: 'vuetify',
+                    var: 'Vuetify'
                 }
             ]
         }),
