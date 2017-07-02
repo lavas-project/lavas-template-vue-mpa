@@ -65,10 +65,8 @@ export default {
             // 让当前输入框失去焦点
             this.$el.querySelector('.search-input').blur();
 
-            w// 等待 1s，模拟加载中的效果
-            await new Promise(resolve => {
-                setTimeout(resolve, 1000);
-            });
+            // 等待 1s，模拟加载中的效果
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
             // 设置搜索结果数据
             this.data = [
