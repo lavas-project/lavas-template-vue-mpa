@@ -5,8 +5,7 @@
 
 import * as types from '../mutation-types';
 
-
-const state = {
+let state = {
 
     /**
      * 是否需要页面切换动画
@@ -27,11 +26,17 @@ const state = {
      *
      * @type {string}
      */
-    pageTransitionName: ''
+    pageTransitionName: '',
 
+    /**
+     * 上个页面 scroll 的信息
+     *
+     * @type {Object}
+     */
+    historyPageScrollTop: {}
 };
 
-const actions = {
+let actions = {
 
     /**
      * 开启页面切换动画
@@ -59,19 +64,31 @@ const actions = {
      */
     setPageSwitching({commit}, isPageSwitching) {
         commit(types.SET_PAGE_SWITCHING, isPageSwitching);
+    },
+
+    /**
+     * 保存页面 scroll 高度
+     *
+     * @param {[type]} options.commit [description]
+     * @param {string} options.path path
+     * @param {number} options.scrollTop scrollTop
+     */
+    saveScrollTop({commit}, {path, scrollTop}) {
+        commit(types.SAVE_SCROLLTOP, {path, scrollTop});
     }
 };
 
-const mutations = {
+let mutations = {
     [types.SET_PAGE_SWITCHING](state, isPageSwitching) {
         state.isPageSwitching = isPageSwitching;
     },
     [types.SET_PAGE_TRANSITION_NAME](state, {pageTransitionName}) {
         state.pageTransitionName = pageTransitionName;
+    },
+    [types.SAVE_SCROLLTOP](state, {path, scrollTop}) {
+        state.historyPageScrollTop[path] = scrollTop;
     }
 };
-
-
 
 export default {
     namespaced: true,
@@ -81,6 +98,7 @@ export default {
     state,
     /* eslint-enable */
     modules: {
+
         /**
          * 顶部导航栏的数据
          *
@@ -89,6 +107,7 @@ export default {
         appHeader: {
             namespaced: true,
             state: {
+
                 /**
                  * 是否展示顶部导航栏
                  *
@@ -167,6 +186,7 @@ export default {
             state: {
                 show: false, // 是否显示sidebar
                 slideFrom: 'left', // 划出的方向
+
                 // 头部条的相关配置
                 title: {
                     imageLeft: '',
@@ -179,10 +199,13 @@ export default {
                     svgRight: '',
                     iconRight: ''
                 },
+
                 // 最大宽度，可以是百分比，也可以以px为单位
                 width: 0.75,
+
                 // 滑动距离展示阈值
                 showWidthThreshold: 0.25,
+
                 // 分块组
                 blocks: [
                     {
@@ -244,6 +267,7 @@ export default {
         appBottomNavigator: {
             namespaced: true,
             state: {
+
                 /**
                  * 是否展示底部导航栏
                  *
@@ -260,22 +284,29 @@ export default {
                     {
                         // 按钮的名字
                         name: 'home',
+
                         // 显示的 icon
                         icon: 'home',
+
                         // 显示的文字
                         text: '主页',
+
                         // 是否是当前激活的
                         active: true,
+
                         // 路由
                         route: '/home'
                     },
                     {
                         // 按钮的名字
                         name: 'user',
+
                         // 显示的 icon
                         icon: 'person',
+
                         // 显示的文字
                         text: '个人中心',
+
                         // 路由信息
                         route: '/home/user'
                     }

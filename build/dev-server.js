@@ -22,15 +22,11 @@ const proxyMiddleware = require('http-proxy-middleware');
 const webpackConfig = require('./webpack.dev.conf');
 const utils = require('./utils');
 
-// default port where dev server listens for incoming traffic
+// 默认调试服务器端口
 let port = process.env.PORT || config.dev.port;
 
-// automatically open browser, if not set will be false
+// 启动调试服务器时是否自动打开浏览器，默认为 false
 let autoOpenBrowser = !!config.dev.autoOpenBrowser;
-
-// Define HTTP proxies to your custom API backend
-// https://github.com/chimurai/http-proxy-middleware
-let proxyTable = config.dev.proxyTable;
 
 let app = express();
 let compiler = webpack(webpackConfig);
@@ -44,7 +40,7 @@ let hotMiddleware = require('webpack-hot-middleware')(compiler, {
     log: function () {}
 });
 
-// force page reload when html-webpack-plugin template changes
+// 当 html-webpack-plugin 的模版文件更新的时候，强制重新刷新调试页面
 compiler.plugin('compilation', function (compilation) {
     compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
         hotMiddleware.publish({
@@ -54,7 +50,10 @@ compiler.plugin('compilation', function (compilation) {
     });
 });
 
-// proxy api requests
+// 指定需要代理的请求列表
+let proxyTable = config.dev.proxyTable;
+
+// 代理请求
 Object.keys(proxyTable).forEach(function (context) {
     let options = proxyTable[context];
     if (typeof options === 'string') {
@@ -79,14 +78,13 @@ app.use(require('connect-history-api-fallback')({
     rewrites: rewrites
 }));
 
-// serve webpack bundle output
+// 服务器部署 webpack 打包的静态资源
 app.use(devMiddleware);
 
-// enable hot-reload and state-preserving
-// compilation error display
+// 使用热更新， 如果编译出现错误会实时展示编译错误
 app.use(hotMiddleware);
 
-// serve pure static assets
+// 纯静态资源服务
 let staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
 app.use(staticPath, express.static('./static'));
 
@@ -102,7 +100,7 @@ console.log('> Starting dev server...');
 devMiddleware.waitUntilValid(function () {
     console.log('> Listening at ' + uri + '\n');
 
-    // when env is testing, don't need open it
+    // 当测试环境下，不需要打开浏览器
     if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
         opn(uri);
     }

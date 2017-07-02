@@ -3,7 +3,6 @@
  * @author *__ author __*{% if: *__ email __* %}(*__ email __*){% /if %}
  */
 
-/* eslint-disable no-console */
 'use strict';
 
 const fs = require('fs');

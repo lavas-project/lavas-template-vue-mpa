@@ -3,11 +3,13 @@
  * @author *__ author __*{% if: *__ email __* %}(*__ email __*){% /if %}
  */
 
+'use strict';
+
 // see http://vuejs-templates.github.io/webpack for documentation.
-var path = require('path');
-var swPrecacheConfig = require('./sw-precache');
-var icon = require('./icon');
-var theme = require('./theme');
+const path = require('path');
+const swPrecacheConfig = require('./sw-precache');
+const icon = require('./icon');
+const theme = require('./theme');
 
 module.exports = {
     icon: icon,

@@ -1,12 +1,13 @@
 /* eslint-disable */
 
-// TODO: 在pr通过之前，先使用
+'use strict';
 
-var webpack = require("webpack");
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-var TemplatedPathPlugin = require("webpack/lib/TemplatedPathPlugin");
-var path = require("path");
-var TEMPLATED_PATH_REGEXP_NAME = /\[name\]/gi;
+// TODO: 在 pr 通过之前，先使用
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const TemplatedPathPlugin = require("webpack/lib/TemplatedPathPlugin");
+const path = require("path");
+const TEMPLATED_PATH_REGEXP_NAME = /\[name\]/gi;
 
 function setPluginOptions (pluginOptions) {
     return {
@@ -25,9 +26,9 @@ function MultipageWebpackPlugin(pluginOptions) {
     Object.assign(this, setPluginOptions(pluginOptions || {}));
 }
 
-MultipageWebpackPlugin.prototype.getFullTemplatePath = function(entryKey) {
-    var appliedTemplatedPath = this.templatePath;
-    var appliedTemplatedFilename = this.templateFilename;
+MultipageWebpackPlugin.prototype.getFullTemplatePath = function (entryKey) {
+    let appliedTemplatedPath = this.templatePath;
+    let appliedTemplatedFilename = this.templateFilename;
     appliedTemplatedPath = appliedTemplatedPath.replace(TEMPLATED_PATH_REGEXP_NAME, entryKey);
     appliedTemplatedFilename = appliedTemplatedFilename.replace(TEMPLATED_PATH_REGEXP_NAME, entryKey);
 
@@ -35,15 +36,15 @@ MultipageWebpackPlugin.prototype.getFullTemplatePath = function(entryKey) {
 }
 
 MultipageWebpackPlugin.prototype.apply = function(compiler) {
-    var self = this;
-    var webpackConfigOptions = compiler.options;
-    var entriesToCreateTemplatesFor = Object.keys(webpackConfigOptions.entry)
+    let self = this;
+    let webpackConfigOptions = compiler.options;
+    let entriesToCreateTemplatesFor = Object.keys(webpackConfigOptions.entry)
         .filter(function (entry) {
-            return entry !== this.vendorChunkName;
+            return entry !== self.vendorChunkName;
         });
 
     entriesToCreateTemplatesFor.forEach(function (entryKey) {
-        var htmlWebpackPluginOptions = {
+        let htmlWebpackPluginOptions = {
             filename: self.getFullTemplatePath(entryKey),
             chunksSortMode: 'dependency',
             chunks: ['inline', self.vendorChunkName, entryKey, self.sharedChunkName]
@@ -63,7 +64,7 @@ MultipageWebpackPlugin.prototype.apply = function(compiler) {
             name: "shared",
             minChunks: entriesToCreateTemplatesFor.length || 3,
             chunks: Object.keys(webpackConfigOptions.entry)
-        }),      
+        }),
         new webpack.optimize.CommonsChunkPlugin({
             name: "vendor",
             minChunks: Infinity,
