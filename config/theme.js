@@ -3,7 +3,6 @@
  * @author *__ author __*{% if: *__ email __* %}(*__ email __*){% /if %}
  */
 
-
 // 定义主题列表
 const themeList = {
     // 定义主题名称

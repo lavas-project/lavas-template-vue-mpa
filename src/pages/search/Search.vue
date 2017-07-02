@@ -55,17 +55,18 @@ export default {
             'hideBottomNav'
         ]),
         async search() {
+
             // 把数据清空
             this.data = [];
+
             // 显示加载动画
             this.loading = true;
+
             // 让当前输入框失去焦点
             this.$el.querySelector('.search-input').blur();
 
             // 等待 1s，模拟加载中的效果
-            await new Promise(resolve => {
-                setTimeout(resolve, 1000);
-            });
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
             // 设置搜索结果数据
             this.data = [

@@ -9,6 +9,4 @@ import pageRouter from './router';
 
 const {app, router} = createApp(pageRouter);
 
-router.onReady(() => {
-    app.$mount('#app');
-});
+router.onReady(() => app.$mount('#app'));

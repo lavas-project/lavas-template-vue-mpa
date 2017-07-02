@@ -14,6 +14,9 @@ npm update
 # 启动开发服务器，默认打开localhost:8082/home
 npm run dev
 
+# 检查您的代码是否规范
+npm run lint
+
 # 生产环境构建
 npm run build
 
