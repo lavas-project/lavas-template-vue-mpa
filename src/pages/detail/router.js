@@ -6,10 +6,9 @@
 import Detail from '@/pages/detail/Detail.vue';
 
 export default {
-    base: '/detail',
     routes: [
         {
-            path: '/:id',
+            path: '/detail/:id',
             name: 'detail',
             component: Detail,
             meta: {

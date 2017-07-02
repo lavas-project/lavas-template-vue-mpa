@@ -5,40 +5,42 @@
 
 /* eslint-disable no-console */
 
+'use strict';
+
 require('./check-versions')();
-var config = require('../config');
+const config = require('../config');
 
 if (!process.env.NODE_ENV) {
     process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV);
 }
 
-var opn = require('opn');
-var path = require('path');
-var express = require('express');
-var webpack = require('webpack');
-var proxyMiddleware = require('http-proxy-middleware');
-var webpackConfig = require('./webpack.dev.conf');
-var utils = require('./utils');
+const opn = require('opn');
+const path = require('path');
+const express = require('express');
+const webpack = require('webpack');
+const proxyMiddleware = require('http-proxy-middleware');
+const webpackConfig = require('./webpack.dev.conf');
+const utils = require('./utils');
 
 // default port where dev server listens for incoming traffic
-var port = process.env.PORT || config.dev.port;
+let port = process.env.PORT || config.dev.port;
 
 // automatically open browser, if not set will be false
-var autoOpenBrowser = !!config.dev.autoOpenBrowser;
+let autoOpenBrowser = !!config.dev.autoOpenBrowser;
 
 // Define HTTP proxies to your custom API backend
 // https://github.com/chimurai/http-proxy-middleware
-var proxyTable = config.dev.proxyTable;
+let proxyTable = config.dev.proxyTable;
 
-var app = express();
-var compiler = webpack(webpackConfig);
+let app = express();
+let compiler = webpack(webpackConfig);
 
-var devMiddleware = require('webpack-dev-middleware')(compiler, {
+let devMiddleware = require('webpack-dev-middleware')(compiler, {
     publicPath: webpackConfig.output.publicPath,
     quiet: true
 });
 
-var hotMiddleware = require('webpack-hot-middleware')(compiler, {
+let hotMiddleware = require('webpack-hot-middleware')(compiler, {
     log: function () {}
 });
 
@@ -54,7 +56,7 @@ compiler.plugin('compilation', function (compilation) {
 
 // proxy api requests
 Object.keys(proxyTable).forEach(function (context) {
-    var options = proxyTable[context];
+    let options = proxyTable[context];
     if (typeof options === 'string') {
         options = {
             target: options
@@ -63,16 +65,18 @@ Object.keys(proxyTable).forEach(function (context) {
     app.use(proxyMiddleware(options.filter || context, options));
 });
 
-// handle fallback for HTML5 history API
-var rewrites = Object.keys(utils.getEntries('./src/pages', 'entry.js')).map(function (entry) {
-    return {
-        from: new RegExp(`/${entry}`),
-        to: `/${entry}/index.html`
-    };
-});
+// 处理HTML5 history API，映射例如/home路由到/home/index.html
+let rewrites = Object.keys(utils.getEntries('./src/pages', 'entry.js'))
+    .map(function (entry) {
+        return {
+            from: new RegExp('/' + entry),
+            to: '/' + entry + '/index.html'
+        };
+    });
+
 app.use(require('connect-history-api-fallback')({
     htmlAcceptHeaders: ['text/html'],
-    rewrites
+    rewrites: rewrites
 }));
 
 // serve webpack bundle output
@@ -83,13 +87,13 @@ app.use(devMiddleware);
 app.use(hotMiddleware);
 
 // serve pure static assets
-var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
+let staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
 app.use(staticPath, express.static('./static'));
 
-var uri = 'http://localhost:' + port + '/home';
+let uri = 'http://localhost:' + port + '/home';
 
-var newResolve;
-var readyPromise = new Promise(function (resolve) {
+let newResolve;
+let readyPromise = new Promise(function (resolve) {
     newResolve = resolve;
 });
 
@@ -105,7 +109,7 @@ devMiddleware.waitUntilValid(function () {
     newResolve();
 });
 
-var server = app.listen(port);
+let server = app.listen(port);
 
 module.exports = {
     ready: readyPromise,

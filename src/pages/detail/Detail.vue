@@ -53,9 +53,7 @@ export default {
             actions: [
                 {
                     icon: 'home',
-                    route: {
-                        name: 'home'
-                    }
+                    route: '/home'
                 }
             ]
         });

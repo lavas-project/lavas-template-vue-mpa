@@ -1,7 +1,21 @@
-/* eslint-disable */
+/**
+ * @file theme loader
+ *
+ * @desc 向每个.vue文件中注入样式相关的变量，不需要手动import
+ * @author *__ author __*{% if: *__ email __* %}(*__ email __*){% /if %}
+ */
+
+/* eslint-disable fecs-no-require, fecs-prefer-destructure */
+
+'use strict';
+
+const theme = require('../../config/theme');
 const loaderUtils = require('loader-utils');
-const STYLE_TAG_REG= /(\<style.*?lang="styl(?:us)?".*?\>)([\S\s]*?)(\<\/style\>)/g;
-const defaultVuetifyVariables = {
+
+const STYLE_TAG_REG = /(\<style.*?lang="styl(?:us)?".*?\>)([\S\s]*?)(\<\/style\>)/g;
+
+// 定义在vuetify中默认的两组stylus hash：主题色和material相关
+let defaultVuetifyVariables = {
     themeColor: {
         primary: '$blue.darken-2',
         accent: '$blue.accent-2',
@@ -23,10 +37,15 @@ const defaultVuetifyVariables = {
         'inactive-icon-percent': .38
     }
 };
-// extract vuetify theme variables
-const {theme} = require('../../config');
-const themeColor = Object.assign({},
-    defaultVuetifyVariables.themeColor, theme.theme.themeColor);
+
+// 使用用户定义在config/theme.js中的变量覆盖默认值
+let themeColor = Object.assign(
+    {},
+    defaultVuetifyVariables.themeColor,
+    theme.theme.themeColor
+);
+
+// 最终输出的stylus hash(themeColor部分)
 let themeColorTemplate = `
     $theme := {
         primary: ${themeColor.primary}
@@ -39,8 +58,12 @@ let themeColorTemplate = `
     }
 `;
 
-const materialDesign = Object.assign({},
-    defaultVuetifyVariables.materialDesign, theme.theme.materialDesign);
+let materialDesign = Object.assign(
+    {},
+    defaultVuetifyVariables.materialDesign,
+    theme.theme.materialDesign
+);
+
 let materialDesignTemplate = `
     $material-custom := {
         bg-color: ${materialDesign['bg-color']}
@@ -56,21 +79,21 @@ let materialDesignTemplate = `
     $material-theme := $material-custom
 `;
 
-// import global variables
-const importVariablesTemplate = `@import '~@/assets/styles/variables';`;
-// add to global variables
-const injectedTemplate = `
-    ${importVariablesTemplate}
-    ${themeColorTemplate}
-    ${materialDesignTemplate}
+// 引入项目变量和vuetify中使用的颜色变量
+let importVariablesTemplate = `
+    @import '~@/assets/styles/variables';
+    @import '~vuetify/src/stylus/settings/_colors';
 `;
+
+let injectedTemplate = importVariablesTemplate
+    + themeColorTemplate + materialDesignTemplate;
 
 module.exports = function (source) {
     this.cacheable();
-    const options = loaderUtils.getOptions(this);
+    let options = loaderUtils.getOptions(this);
     if (options && options.injectInVueFile) {
-        // inject variables into <style> tag in every '.vue' file
+        // 向每一个.vue文件的<style>块中注入
         return source.replace(STYLE_TAG_REG, `$1${injectedTemplate}$2$3`);
     }
-    return `${injectedTemplate}${source}`;
-}
+    return injectedTemplate + source;
+};

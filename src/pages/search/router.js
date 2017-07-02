@@ -6,10 +6,9 @@
 import Search from '@/pages/search/Search.vue';
 
 export default {
-    base: '/search',
     routes: [
         {
-            path: '/',
+            path: '/search',
             name: 'search',
             component: Search
         }

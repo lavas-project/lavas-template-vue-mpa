@@ -10,7 +10,6 @@ const themeList = {
     myTheme: {
         themeColor: {
             primary: 'rgb(40, 116, 240)',
-            // primary: '#4DBA87',
             accent: '$blue.accent-2',
             secondary: '$grey.darken-3',
             info: '$blue.base',

@@ -7,15 +7,14 @@ import Home from '@/pages/home/Home.vue';
 import User from '@/pages/home/User.vue';
 
 export default {
-    base: '/home',
     routes: [
         {
-            path: '/',
+            path: '/home',
             name: 'home',
             component: Home
         },
         {
-            path: '/user',
+            path: '/home/user',
             name: 'user',
             component: User
         }
