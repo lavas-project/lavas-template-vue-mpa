@@ -14,6 +14,9 @@ npm update
 # serve with hot reload at localhost:8082
 npm run dev
 
+# 检查您的代码是否规范
+npm run lint
+
 # build for production with minification
 npm run build
 
