@@ -117,12 +117,17 @@ export default {
 </script>
 
 <style lang="stylus">
+body
+    background-color: $material-theme.bg-color
+
 #app
     font-family 'Avenir', Helvetica, Arial, sans-serif
     -webkit-font-smoothing antialiased
     -moz-osx-font-smoothing grayscale
     text-align center
     color #2c3e50
+    position static
+
 </style>
 
 <style lang="stylus" scoped>
@@ -136,6 +141,7 @@ export default {
     height 100%
     display flex
     flex-direction column
+    transform translate3d(0, 0, 0)
 
     .app-shell-header
         position fixed
