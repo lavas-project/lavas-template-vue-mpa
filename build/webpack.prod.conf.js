@@ -102,7 +102,8 @@ let webpackConfig = merge(baseWebpackConfig, {
                 },
                 {
                     name: 'vuetify',
-                    var: 'Vuetify'
+                    var: 'Vuetify',
+                    path: 'dist/vuetify.min.js'
                 }
             ]
         }),
