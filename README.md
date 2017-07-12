@@ -46,12 +46,17 @@ lavas-template-vue-mpa
 
 ## 基本实现方式
 
-与 appshell 单页模版不同的是，使用 multipage 插件生成多个页面，同时在构建时渲染各个页面对应的 skeleton 组件，将渲染结果插入最终页面 html 中。
+与 appshell 单页模版不同的是，使用 [multipage 插件](https://github.com/mutualofomaha/multipage-webpack-plugin)生成多个页面，同时在构建时渲染各个页面对应的 skeleton 组件，将渲染结果插入最终页面 html 中。
 
-## 各个单页间路由跳转
+## 各个单页间跳转
 
-从上面的文件结构中可以看出，各个页面拥有自己独立的路由，所以 home 页面的路由对象中不应该包含例如`/detail/:id`的规则。为了保证各页面间能够正常跳转，需要添加一条覆盖所有情况的路由规则'*'。在单页应用中，通常用来展示404页面，而我们在这里完成跳转。
+在单页应用中我们使用 vue-router 进行前端路由跳转，而多页应用可以看成多个单页应用，每个单页都可以有各自独立的路由，那么如何做到在各个单页之间进行跳转呢？
 
+例如想从A页面跳转到B页面，发现目标路由规则并不在A页面的规则集中，此时肯定不能展示404页面，需要识别出这是一个有效的路由规则，通过`window.location.href`而非 vue-router 进行跳转。
+
+这就要求我们在构建时收集所有页面使用的路由规则（由router-loader完成），形成一个项目中有效的路由规则全集。各个页面遇到不匹配的路由时，都需要去这个全集中查看，匹配了其中的某条规则才进行跳转，否则依然展示404页面。
+
+具体实现如下：
 ```js
 // src/router.js
 
@@ -60,11 +65,16 @@ const router = new Router({
     mode: 'history',
     base: '/',
     routes: [
-        ...routes, // 各个页面自身的路由规则
+        ...routes,
         {
             path: '*',
-            beforeEnter(to) {
-                window.location.href = to.fullPath;
+            component: NotFound,
+            beforeEnter(to, from, next) {
+                if (validateRoute(to.fullPath)) { // 跳转到有效路由
+                    window.location.href = to.fullPath;
+                    return;
+                }
+                next(); // 继续展示404页面
             }
         }
     ]
@@ -113,23 +123,6 @@ app.use(require('connect-history-api-fallback')({
 
 ## 待解决问题
 
-### multipage插件
-
-* [ ] 需要支持传入更多htmlWebpackPlugin参数
-* [ ] 需要支持替换目标路径中的`[name]`占位符
-
-[对应PR](https://github.com/mutualofomaha/multipage-webpack-plugin/pull/34)
-
-### webpack-cdn插件
-
-在生产环境构建时，使用了[webpack-cdn插件](https://github.com/van-nguyen/webpack-cdn-plugin)，由于发布时代码没有编译到ES2015，里面又使用了例如解构的ES6语法，在 node < 6 时运行`npm run build`会出错。
-
-[对应PR](https://github.com/van-nguyen/webpack-cdn-plugin/pull/5)已通过，问题解决。
-
 ### vue-skeleton插件
 
 * [ ] 开发环境下插入各个页面的 skeleton 路由规则，方便开发调试。
-
-### 404页面问题
-
-由于在单页中没有找到匹配的路由都进行了跳转，意味着无法展示404页面。

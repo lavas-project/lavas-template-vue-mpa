@@ -18,7 +18,7 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const SkeletonWebpackPlugin = require('vue-skeleton-webpack-plugin');
 const SwRegisterWebpackPlugin = require('sw-register-webpack-plugin');
 const WebpackCdnPlugin = require('webpack-cdn-plugin');
-const MultipageWebpackPlugin = require('./multipage-plugin');
+const MultipageWebpackPlugin = require('multipage-webpack-plugin');
 
 let env = process.env.NODE_ENV === 'testing'
     ? require('../config/test.env')

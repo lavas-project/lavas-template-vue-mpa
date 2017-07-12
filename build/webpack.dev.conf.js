@@ -14,7 +14,7 @@ const baseWebpackConfig = require('./webpack.base.conf');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const SkeletonWebpackPlugin = require('vue-skeleton-webpack-plugin');
-const MultipageWebpackPlugin = require('./multipage-plugin');
+const MultipageWebpackPlugin = require('multipage-webpack-plugin');
 
 function resolve(dir) {
     return path.join(__dirname, '..', dir);

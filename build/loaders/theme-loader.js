@@ -89,7 +89,6 @@ let injectedTemplate = importVariablesTemplate
     + themeColorTemplate + materialDesignTemplate;
 
 module.exports = function (source) {
-    this.cacheable();
     let options = loaderUtils.getOptions(this);
     if (options && options.injectInVueFile) {
         // 向每一个.vue文件的<style>块中注入

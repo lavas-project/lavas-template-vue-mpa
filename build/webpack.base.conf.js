@@ -32,6 +32,12 @@ module.exports = {
     },
     module: {
         rules: [
+            // collect routes and inject
+            {
+                resource: resolve('src/router.js'),
+                loader: 'router-loader',
+                enforce: 'pre'
+            },
             // register custom svgs
             {
                 resource: resolve('src/app.js'),
@@ -97,7 +103,8 @@ module.exports = {
     resolveLoader: {
         alias: {
             'svg-loader': path.join(__dirname, './loaders/svg-loader'),
-            'theme-loader': path.join(__dirname, './loaders/theme-loader')
+            'theme-loader': path.join(__dirname, './loaders/theme-loader'),
+            'router-loader': path.join(__dirname, './loaders/router-loader')
         }
     }
 };
