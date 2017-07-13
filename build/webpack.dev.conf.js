@@ -28,6 +28,13 @@ Object.keys(baseWebpackConfig.entry).forEach(function (name) {
 module.exports = merge(baseWebpackConfig, {
     module: {
         rules: utils.styleLoaders({sourceMap: config.dev.cssSourceMap})
+            .concat(SkeletonWebpackPlugin.loader({
+                resource: resolve('src/router.js'),
+                options: {
+                    entry: Object.keys(utils.getEntries('./src/pages')),
+                    importTemplate: 'import [nameCap] from \'@/pages/[name]/[nameCap].skeleton.vue\';'
+                }
+            }))
     },
 
     // cheap-module-eval-source-map is faster for development

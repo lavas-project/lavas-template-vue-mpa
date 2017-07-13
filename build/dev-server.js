@@ -65,12 +65,18 @@ Object.keys(proxyTable).forEach(function (context) {
 });
 
 // 处理HTML5 history API，映射例如/home路由到/home/index.html
-let rewrites = Object.keys(utils.getEntries('./src/pages', 'entry.js'))
-    .map(function (entry) {
-        return {
+let rewrites = [];
+Object.keys(utils.getEntries('./src/pages', 'entry.js'))
+    .forEach(entry => {
+        rewrites.push({
             from: new RegExp('/' + entry),
             to: '/' + entry + '/index.html'
-        };
+        });
+        // 额外插入skeleton路由
+        rewrites.push({
+            from: new RegExp('/skeleton-' + entry),
+            to: '/' + entry + '/index.html'
+        });
     });
 
 app.use(require('connect-history-api-fallback')({

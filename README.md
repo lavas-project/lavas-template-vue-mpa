@@ -121,8 +121,3 @@ app.use(require('connect-history-api-fallback')({
 }));
 ```
 
-## 待解决问题
-
-### vue-skeleton插件
-
-* [ ] 开发环境下插入各个页面的 skeleton 路由规则，方便开发调试。
