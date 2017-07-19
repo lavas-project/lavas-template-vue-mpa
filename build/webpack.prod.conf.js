@@ -17,7 +17,6 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const SkeletonWebpackPlugin = require('vue-skeleton-webpack-plugin');
 const SwRegisterWebpackPlugin = require('sw-register-webpack-plugin');
-const WebpackCdnPlugin = require('webpack-cdn-plugin');
 const MultipageWebpackPlugin = require('multipage-webpack-plugin');
 
 let env = process.env.NODE_ENV === 'testing'
@@ -34,10 +33,6 @@ let webpackConfig = merge(baseWebpackConfig, {
             sourceMap: config.build.productionSourceMap,
             extract: true
         })
-    },
-    externals: {
-        vue: 'Vue',
-        vuetify: 'Vuetify'
     },
     devtool: config.build.productionSourceMap ? '#source-map' : false,
     output: {
@@ -88,24 +83,9 @@ let webpackConfig = merge(baseWebpackConfig, {
                     collapseWhitespace: true,
                     removeAttributeQuotes: true
                 },
-                favicon: utils.assetsPath('img/icons/favicon.ico')
+                favicon: utils.assetsPath('img/icons/favicon.ico'),
+                chunksSortMode: 'auto'
             }
-        }),
-
-        // https://github.com/van-nguyen/webpack-cdn-plugin
-        new WebpackCdnPlugin({
-            modules: [
-                {
-                    name: 'vue',
-                    var: 'Vue',
-                    path: 'dist/vue.runtime.min.js'
-                },
-                {
-                    name: 'vuetify',
-                    var: 'Vuetify',
-                    path: 'dist/vuetify.min.js'
-                }
-            ]
         }),
 
         // copy custom static assets

@@ -83,7 +83,8 @@ const router = new Router({
 
 ### 服务端配置
 
-和使用 HTML5 History 模式的单页应用一样，需要在服务端配置路由规则。以nginx为例：
+和使用 HTML5 History 模式的单页应用一样，需要在服务端配置路由规则。
+服务端只需要关心页面级别的重定向，以nginx为例：
 ```
 // nginx.conf
 
