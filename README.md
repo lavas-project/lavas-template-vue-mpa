@@ -1,6 +1,6 @@
-# *__name__*
+# Lavas MPA 模版
 
-> *__desc__*
+> 这是一个支持多页应用的 Vue 模版，解决了一些多页应用中遇到的常见问题
 
 ## 安装，开发及调试
 
@@ -20,13 +20,13 @@ npm run lint
 # 生产环境构建
 npm run build
 
-# 生产环境构建并展示bundle信息
+# 生产环境构建并展示 bundle 信息
 npm run build --report
 ```
 
 ## 文件结构
 
-绝大部分结构和[appshell模版](https://github.com/lavas-project/lavas-template-vue-appshell)一致，只是`pages/`下存放各个页面文件夹而不是路由组件。
+绝大部分结构和[ Lavas Appshell模版](https://github.com/lavas-project/lavas-template-vue-appshell)一致，只是`pages/`下存放各个页面文件夹而不是路由组件。
 每个页面文件夹中包含该单页所需的各个文件。
 ``` bash
 lavas-template-vue-mpa
@@ -46,7 +46,15 @@ lavas-template-vue-mpa
 
 ## 基本实现方式
 
-与 appshell 单页模版不同的是，使用 [multipage 插件](https://github.com/mutualofomaha/multipage-webpack-plugin)生成多个页面，同时在构建时渲染各个页面对应的 skeleton 组件，将渲染结果插入最终页面 html 中。
+与 Appshell 单页模版不同的是，使用 [multipage 插件](https://github.com/mutualofomaha/multipage-webpack-plugin)生成多个页面，同时在构建时预渲染各个页面对应的 skeleton 组件，将渲染结果插入最终页面 HTML 中。
+
+> 如果您还不了解 skeleton 骨架屏组件，可以参考[这篇文章](https://xiaoiver.github.io/coding/2017/07/30/%E4%B8%BAvue%E9%A1%B9%E7%9B%AE%E6%B7%BB%E5%8A%A0%E9%AA%A8%E6%9E%B6%E5%B1%8F.html)
+
+## 多页应用中特有问题
+
+在多页应用中，有两个问题需要我们关注：
+1. 各个单页路由跳转问题。
+2. 单页应用中，Service Worker 查找当前路由对应的 HTML 页面很简单。多页中则不是。
 
 ## 各个单页间跳转
 
@@ -80,6 +88,10 @@ const router = new Router({
     ]
 });
 ```
+
+关于 router-loader 的实现原理，可以参考[这篇文档](https://lavas.baidu.com/guide/vue/doc/vue/webpack/router-loader)。
+
+下面让我们看看在服务端要做哪些配置。
 
 ### 服务端配置
 
@@ -121,4 +133,31 @@ app.use(require('connect-history-api-fallback')({
     rewrites
 }));
 ```
+
+我们为什么不将 404 放在服务端配置，例如在 nginx 配置中最后写一条规则呢？
+如果我们这么做，那么需要将前端所有路由规则在 nginx 中复制一份，这样才能保证不在路由规则全集中的请求落到 404 规则中。这样一来，每次前端路由发生变化，都需要在服务端同步修改。这也是我们将 404 放在前端判断的原因，这样服务端的配置将简单很多，只有新增页面级别的路由才需要修改。
+
+## 缓存查找
+
+我们需要对使用 sw-precache 插件生成的 Service Worker 文件进行一点修改。
+
+默认在缓存中查找请求结果时，遵循以下规则按顺序查找：
+1. 忽略参数，hash
+2. 尝试拼上`index.html`
+3. 使用缺省页面路径，通常传入`index.html`
+
+这在单页应用中没有问题，只有一个页面嘛，缺省路径总是可以生效。但多页中就不行了。
+我们需要在第三步之前增加一个判断，根据路径判断当前路由属于哪个页面。例如`/home/user`应该匹配到缓存中的`home.html`，当然这是根据默认的打包路径规则确定的。
+
+```js
+// config/sw.tmpl.js
+var url = new URL(originalUrl);
+// /home/user => home
+var entryName = url.pathname.split('/')[1];
+if (entryName) {
+    url.pathname = '/' + entryName + '.html';
+}
+```
+
+这样就能保证多页的离线可用了。
 
