@@ -51,17 +51,16 @@ module.exports = function (source) {
     let entryRouters = utils.getEntries('./src/pages', 'router.js');
     let routePaths = [];
 
-    for (let entryName in entryRouters) {
-        if (entryRouters.hasOwnProperty(entryName)) {
-            let routerPath = path.resolve(__dirname, '../../', entryRouters[entryName]);
-            let content = fs.readFileSync(routerPath, 'utf8');
+    Object.keys(entryRouters).forEach(entryName => {
 
-            routePaths = routePaths.concat(extractRoutePaths(content));
+        let routerPath = path.resolve(__dirname, '../../', entryRouters[entryName]);
+        let content = fs.readFileSync(routerPath, 'utf8');
 
-            // 加入文件监听列表
-            this.addDependency(routerPath);
-        }
-    }
+        routePaths = routePaths.concat(extractRoutePaths(content));
+
+        // 加入文件监听列表
+        this.addDependency(routerPath);
+    });
 
     return insertAt(source, routePaths.join(','), pos);
 };

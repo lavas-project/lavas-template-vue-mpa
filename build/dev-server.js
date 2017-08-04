@@ -36,8 +36,9 @@ let devMiddleware = require('webpack-dev-middleware')(compiler, {
     quiet: true
 });
 
+let noop = function () {};
 let hotMiddleware = require('webpack-hot-middleware')(compiler, {
-    log: function () {}
+    log: noop
 });
 
 // 当 html-webpack-plugin 的模版文件更新的时候，强制重新刷新调试页面
@@ -114,10 +115,10 @@ devMiddleware.waitUntilValid(function () {
 });
 
 let server = app.listen(port);
-
+let closeServer = function () {
+    server.close();
+};
 module.exports = {
     ready: readyPromise,
-    close: function () {
-        server.close();
-    }
+    close: closeServer
 };
