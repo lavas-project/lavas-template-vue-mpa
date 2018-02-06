@@ -11,13 +11,12 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "fastclick": "^1.0.6",
     "iscroll": "5.1.0",
     "normalize.css": "^7.0.0",
     "vue": "^2.3.3",
     "vue-awesome": "^2.3.1",
     "vue-router": "^2.3.1",
-    "vuetify": "^0.12.7",
+    "vuetify": "^0.17.7",
     "vuex": "^2.3.1"
   },
   "devDependencies": {

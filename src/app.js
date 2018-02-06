@@ -10,15 +10,12 @@ import {createRouter} from './router.js';
 import store from './store';
 import Icon from 'vue-awesome/components/Icon.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
-import FastClick from 'fastclick';
 
 import '@/assets/styles/global.styl';
 
 // 全局的进度条，在组件中可通过 $loading 访问
 let loading = Vue.prototype.$loading = new Vue(ProgressBar).$mount();
 document.body.appendChild(loading.$el);
-
-FastClick.attach(document.body);
 
 Vue.use(Vuetify);
 
