@@ -113,6 +113,7 @@ $btn-color = #fff
     padding 0
     box-shadow 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px rgba(0,0,0,.14), 0 1px 10px rgba(0,0,0,.12)
     transition transform 0.3s ease-out
+    z-index 20
 
     &.slide-down-enter,
     &.slide-down-leave-to

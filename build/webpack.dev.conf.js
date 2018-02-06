@@ -32,7 +32,7 @@ module.exports = merge(baseWebpackConfig, {
                 resource: resolve('src/router.js'),
                 options: {
                     entry: Object.keys(utils.getEntries('./src/pages')),
-                    importTemplate: 'import [nameCap] from \'@/pages/[name]/[nameCap].skeleton.vue\';'
+                    importTemplate: 'import [nameHash] from \'@/pages/[name]/[nameCap].skeleton.vue\';'
                 }
             }))
     },
